@@ -51,13 +51,8 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
 
-    - name: Run tests
-      if: ${{ !matrix.integration }}
-      run: bundle exec rake spec
-
-    - name: Run integration tests (spec/integration/${{ matrix.integration }})
-      if: ${{ matrix.integration }}
-      run: bundle exec rspec spec/integration/${{ matrix.integration }}
+    - name: Run ${{ matrix.integration && format('integration tests (spec/integration/{0})', matrix.integration) || 'tests' }}
+      run: bundle exec ${{ matrix.integration && format('rspec spec/integration/{0}', matrix.integration) || 'rake spec' }}
 
     - name: Coveralls
       uses: coverallsapp/github-action@master
